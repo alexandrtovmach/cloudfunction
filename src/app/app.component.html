@@ -1,5 +1,35 @@
 <div class="wrapper centerContent">
     <div class="exam-panel centerContent">
-        <button (click)="auth()">Auth</button>
+        <div *ngIf="!loaded" class="loadingProcess">Processing...</div>
+        <div *ngIf="loaded" class="loadWrapper">
+            <div *ngIf="!(authService.user | async)">
+            <input type="text" [(ngModel)]="email" placeholder="email">
+            <input type="password" [(ngModel)]="password" placeholder="password">
+
+            <button (click)="signup()" [disabled]="!email || !password">
+                Signup
+            </button>
+            
+            <button (click)="login()" [disabled]="!email || !password">
+                Login
+            </button>
+            </div>
+            <div *ngIf="authService.user | async" class="centerContent flexColumn">
+                <div class="exam">
+                    <div *ngFor="let question of exam" class="question">
+                        {{question}}
+                    </div>
+                </div>
+                <button (click)="generateChapterExam()">
+                    Enter chapter exam
+                </button>
+                <button (click)="generateCourseExam()">
+                    Enter course exam
+                </button>
+                <button (click)="logout()">
+                    Logout
+                </button>
+            </div>
+        </div>
     </div>
 </div>

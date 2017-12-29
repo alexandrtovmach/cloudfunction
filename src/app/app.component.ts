@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
-import { Observable } from 'rxjs/Observable';
+import { AuthService } from './auth.service';
+import { DatabaseService } from './database.service';
 
 @Component({
   selector: 'app-root',
@@ -8,17 +8,63 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'app';
-  items: Observable<any[]>;
+  email: string;
+  password: string;
+  loaded: boolean = false;
+  exam: [any];
 
-  constructor(public database: AngularFirestore) {
-    this.items = database.collection('items').valueChanges();
+  constructor(
+    public authService: AuthService,
+    public databaseService: DatabaseService,
+  ) {}
+
+  ngOnInit() {
+    this.loaded = true
   }
 
-  ngOnInit() {}
+  signup() {
+    this.authService.signup(this.email, this.password);
+    this.email = this.password = '';
+  }
 
-  auth() {
-    // app().auth()
-    // https://github.com/angular/angularfire2/blob/master/docs/install-and-setup.md
+  login() {
+    this.authService.login(this.email, this.password);
+    this.email = this.password = '';
+  }
+
+  logout() {
+    this.authService.logout();
+  }
+
+  generateChapterExam() {
+    this.loaded = false
+
+    this.databaseService.getQuestions()
+    .then((data) => {
+      this.exam = data.val().sort(() => {
+        return (Math.random() > 0.5)
+      })
+      this.databaseService.addChapterExam(this.exam)
+      .then((exam) => {
+        console.log(`This id of created exam: ${exam.key}`)
+        this.loaded = true
+      })
+    })
+  }
+
+  generateCourseExam() {
+    this.loaded = false
+
+    this.databaseService.getQuestions()
+    .then((data) => {
+      this.exam = data.val().sort(() => {
+        return (Math.random() > 0.5)
+      })
+      this.databaseService.addCourseExam(this.exam)
+      .then((exam) => {
+        console.log(`This id of created exam: ${exam.key}`)
+        this.loaded = true
+      })
+    })
   }
 }
