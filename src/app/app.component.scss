@@ -1,0 +1,19 @@
+.wrapper {
+    width: 100%;
+    height: 100vh;
+    .exam-panel {
+        width: 30vw;
+        height: 60vh;
+        min-width: 300px;
+        min-height: 400px;
+        box-shadow: 0 0 5px grey;
+    }
+}
+
+
+// consts
+.centerContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
